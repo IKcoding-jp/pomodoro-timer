@@ -46,7 +46,7 @@ startButton.addEventListener("click", function () {
         isRunning = false;
         startButton.textContent = "スタート";
     } else {
-        timeLeft = workInput.value = 5;
+        timeLeft = workInput.value * 60;
         timer = setInterval(function () {
             timeLeft = timeLeft - 1;
             display.textContent = formatTime(timeLeft);

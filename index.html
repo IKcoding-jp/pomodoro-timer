@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-      <meta charset="UTF-8">
-      <title>ポモドーロタイマー</title>
-      <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
 
+<head>
+  <meta charset="UTF-8">
+  <title>ポモドーロタイマー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="card">
     <div class="settings">
       <label>作業 <input type="number" id="workTime" value="25"> 分</label>
       <label>休憩 <input type="number" id="breakTime" value="5"> 分</label>
@@ -20,8 +23,10 @@
     </div>
 
     <p id="sessionCount">セッション:0</p>
+  </div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 
-  </body>
+</body>
+
 </html>
