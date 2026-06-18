@@ -1,4 +1,6 @@
 let timeLeft = 1500;
+let timer;
+let isRunning = false;
 
 const display = document.querySelector("h1");
 
@@ -10,14 +12,24 @@ function formatTime(seconds) {
     return m + ":" + String(s).padStart(2, "0");
 }
 
-startButton.addEventListener("click", function () {
-    const timer = setInterval(function () {
-        timeLeft = timeLeft -1
-        display.textContent = formatTime(timeLeft);
+startButton.addEventListener("click", function() {
+    if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+        startButton.textContent = "スタート";
+    } else {
+        timer = setInterval(function () {
+            timeLeft = timeLeft - 1;
+            display.textContent = formatTime(timeLeft);
 
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            display.textContent = "終了!";
-        }
-    }, 1000);
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                display.textContent = "終了！";
+                isRunning = false;
+                startButton.textContent = "スタート";
+            }
+        }, 1000);
+        isRunning = true;
+        startButton.textContent = "ストップ";
+    }
 })
