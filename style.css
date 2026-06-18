@@ -16,11 +16,13 @@ button {
     border-radius: 16px;
     border: none;
     color: white;
+    padding: 12px;
 }
 
 .buttons {
     display: flex;
     gap: 8px;
+    
 }
 
 #start {
