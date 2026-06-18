@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); if echo \"$file\" | grep -qE '\\.(js|html|css)$'; then printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"コードは自分で打ってください（学習ルール）。Claude Code はコードファイルを直接編集できません。\"}}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
