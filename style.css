@@ -11,3 +11,22 @@ body {
     height: 100vh;
     margin: 0;
 }
+
+button {
+    border-radius: 16px;
+    border: none;
+    color: white;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+}
+
+#start {
+    background-color: #004CA0;
+}
+
+#reset {
+    background-color: #B00000;
+}
