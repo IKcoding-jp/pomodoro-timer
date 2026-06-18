@@ -1,3 +1,7 @@
+input[type="number"] {
+    width: 50px
+}
+
 h1 {
     font-size: 256px;
     margin: 0;

@@ -4,8 +4,9 @@ let isRunning = false;
 let timerStatus = "work";
 
 const display = document.querySelector("h1");
-
 const startButton = document.getElementById("start");
+const workInput = document.getElementById("workTime");
+const breakInput = document.getElementById("breakTime");
 
 function formatTime(seconds) {
     const m = Math.floor(seconds / 60);
@@ -19,6 +20,7 @@ startButton.addEventListener("click", function() {
         isRunning = false;
         startButton.textContent = "スタート";
     } else {
+        timeLeft = workInput.value * 60;
         timer = setInterval(function () {
             timeLeft = timeLeft - 1;
             display.textContent = formatTime(timeLeft);
@@ -29,12 +31,12 @@ startButton.addEventListener("click", function() {
 
                 if (timerStatus === "work"){
                     timerStatus = "break";
-                    timeLeft = 300;
+                    timeLeft = breakInput.value * 60;
                     display.textContent = "休憩！";
                     startButton.textContent = "休憩スタート";
                 } else {
                     timerStatus = "work";
-                    timeLeft = 1500;
+                    timeLeft = workInput.value * 60;
                     display.textContent = "25:00"
                     startButton.textContent = "スタート"
                 }
@@ -49,8 +51,24 @@ const resetButton = document.getElementById("reset");
 
 resetButton.addEventListener("click", function () {
     clearInterval(timer);
-    timeLeft = 1500;
+    timeLeft = workInput.value * 60;
     isRunning = false;
     startButton.textContent = "スタート";
     display.textContent = formatTime(timeLeft);
+});
+
+workInput.addEventListener("input", function() {
+    if (!isRunning) {
+        timeLeft = workInput.value * 60;
+        display.textContent = formatTime(timeLeft);
+    }
+});
+
+breakInput.addEventListener("input", function() {
+    if (!isRunning) {
+        if(timerStatus === "break") {
+            timeLeft = breakInput.value * 60;
+            display.textContent = formatTime(timeLeft);
+        }
+    }
 });
