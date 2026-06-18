@@ -33,3 +33,13 @@ startButton.addEventListener("click", function() {
         startButton.textContent = "ストップ";
     }
 })
+
+const resetButton = document.getElementById("reset");
+
+resetButton.addEventListener("click", function () {
+    clearInterval(timer);
+    timeLeft = 1500;
+    isRunning = false;
+    startButton.textcontent = "スタート";
+    display.textContent = formatTime(timeLeft);
+});
