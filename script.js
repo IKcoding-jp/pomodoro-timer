@@ -18,6 +18,18 @@ function updateRing(timeLeft, totalTime) {
     ring.style.strokeDashoffset = offset;
 }
 
+function updateDots() {
+    const dots = document.querySelectorAll(".dot");
+    const current = sessionCount % 4;
+    dots.forEach(function (dot, index) {
+        if (index < current) {
+            dot.classList.add("active");
+        } else {
+            dot.classList.remove("active");
+        }
+    });
+}
+
 function formatTime(seconds) {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -32,7 +44,7 @@ function handleTimerEnd() {
     if (timerStatus === "work") {
         timerStatus = "break";
         sessionCount = sessionCount + 1;
-        document.getElementById("sessionCount").textContent = "セッション:" + sessionCount;
+        updateDots();
         timeLeft = (sessionCount % 4 === 0) ? 900 : breakInput.value * 60;
         display.textContent = "休憩";
         startButton.textContent = "休憩スタート";
@@ -84,6 +96,8 @@ resetButton.addEventListener("click", function () {
     startButton.textContent = "スタート";
     display.textContent = formatTime(timeLeft);
     updateRing(timeLeft, totalTime);
+    sessionCount = 0;
+    updateDots();
 });
 
 workInput.addEventListener("input", function () {
