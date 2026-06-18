@@ -3,7 +3,7 @@
 バニラJS（HTML / CSS / JavaScript）で作ったポモドーロタイマーです。  
 JavaScriptの基礎を手書きで学びながら、自分が毎日使う道具として作りました。
 
-**[→ デモを見る](ikcoding-jp.github.io/Pomo/)**
+**[→ デモを見る](https://ikcoding-jp.github.io/Pomo/)**
 
 ---
 
