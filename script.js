@@ -1,6 +1,7 @@
 let timeLeft = 1500;
 let timer;
 let isRunning = false;
+let timerStatus = "work";
 
 const display = document.querySelector("h1");
 
@@ -24,9 +25,19 @@ startButton.addEventListener("click", function() {
 
             if (timeLeft <= 0) {
                 clearInterval(timer);
-                display.textContent = "終了！";
                 isRunning = false;
-                startButton.textContent = "スタート";
+
+                if (timerStatus === "work"){
+                    timerStatus = "break";
+                    timeLeft = 300;
+                    display.textContent = "休憩！";
+                    startButton.textContent = "休憩スタート";
+                } else {
+                    timerStatus = "work";
+                    timeLeft = 1500;
+                    display.textContent = "25:00"
+                    startButton.textContent = "スタート"
+                }
             }
         }, 1000);
         isRunning = true;
