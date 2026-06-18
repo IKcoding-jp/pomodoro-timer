@@ -89,3 +89,7 @@ breakInput.addEventListener("input", function () {
 document.getElementById("debug").addEventListener("click", function () {
     handleTimerEnd();
 });
+
+if (location.hostname !== "localhost" && location.protocol !== "file:") {
+    document.getElementById("debug").style.display = "none";
+}
