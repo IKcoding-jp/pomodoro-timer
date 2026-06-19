@@ -111,6 +111,7 @@ resetButton.addEventListener("click", function () {
 });
 
 workInput.addEventListener("input", function () {
+    if (workInput.value < 1) workInput.value = 1;
     if (!isRunning) {
         timeLeft = workInput.value * 60;
         display.textContent = formatTime(timeLeft);
@@ -118,6 +119,7 @@ workInput.addEventListener("input", function () {
 });
 
 breakInput.addEventListener("input", function () {
+    if (breakInput.value < 1) breakInput.value = 1;
     if (!isRunning) {
         if (timerStatus === "break") {
             timeLeft = breakInput.value * 60;
