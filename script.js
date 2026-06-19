@@ -4,6 +4,8 @@ let timer;
 let isRunning = false;
 let timerStatus = "work";
 let sessionCount = 0;
+let startTimestamp = null;
+let startTimeLeft = 0;
 
 const display = document.querySelector(".ring-time");
 const startButton = document.getElementById("start");
@@ -11,6 +13,7 @@ const workInput = document.getElementById("workTime");
 const breakInput = document.getElementById("breakTime");
 const ring = document.querySelector(".ring-progress");
 const circumference = 2 * Math.PI * 90;
+const chimeSound = new Audio("sounds/chime.mp3");
 ring.style.strokeDasharray = circumference;
 
 function updateRing(timeLeft, totalTime) {
@@ -63,8 +66,10 @@ function handleTimerEnd() {
 }
 
 function playChime() {
-    const sound = new Audio("sounds/chime.mp3");
-    sound.play();
+    chimeSound.currentTime = 0;
+    chimeSound.play().catch(function (e) {
+        console.log("音が鳴りませんでした", e);
+    });
 }
 
 startButton.addEventListener("click", function () {
@@ -74,14 +79,17 @@ startButton.addEventListener("click", function () {
         startButton.textContent = "スタート";
     } else {
         totalTime = timeLeft;
+        startTimestamp = Date.now();
+        startTimeLeft = timeLeft;
         timer = setInterval(function () {
-            timeLeft = timeLeft - 1;
+            const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+            timeLeft = startTimeLeft - elapsed;
             display.textContent = formatTime(timeLeft);
             updateRing(timeLeft, totalTime);
             if (timeLeft <= 0) {
                 handleTimerEnd();
             }
-        }, 1000);
+        }, 500);
         isRunning = true;
         startButton.textContent = "ストップ";
     }
