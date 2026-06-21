@@ -50,6 +50,8 @@ function handleTimerEnd() {
   if (timerStatus === "work") {
     timerStatus = "break";
     sessionCount = sessionCount + 1;
+    saveTodaySession(Number(workInput.value));
+    updateTodayStats();
     localStorage.setItem("sessionCount", sessionCount);
     updateDots();
     timeLeft = sessionCount % 4 === 0 ? 900 : breakInput.value * 60;
@@ -155,3 +157,24 @@ if (savedSession) {
   sessionCount = Number(savedSession);
   updateDots();
 }
+
+function updateTodayStats() {
+  const today = new Date().toISOString().slice(0, 10);
+  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const todayData = log[today] || { sessions: 0, workMinutes: 0 };
+  document.getElementById("todayStats").textContent = 
+    "今日: " + todayData.sessions + "セッション / " + todayData.workMinutes + "分";
+}
+
+function saveTodaySession(workMinutes) {
+  const today = new Date().toISOString().slice(0,10);
+  const log = JSON.parse(localStorage.getItem("studyLog") || "{}" );
+  if(!log[today]) {
+    log[today] = { sessions: 0, workMinutes: 0 };
+  }
+  log[today].sessions += 1;
+  log[today].workMinutes += workMinutes;
+  localStorage.setItem("studyLog", JSON.stringify(log));
+}
+
+updateTodayStats();
