@@ -14,6 +14,9 @@ const breakInput = document.getElementById("breakTime");
 const ring = document.querySelector(".ring-progress");
 const circumference = 2 * Math.PI * 90;
 const chimeSound = new Audio("sounds/chime.mp3");
+const savedWork = localStorage.getItem("workTime");
+const savedBreak = localStorage.getItem("breakTime");
+const savedSession = localStorage.getItem("sessionCount");
 ring.style.strokeDasharray = circumference;
 
 function updateRing(timeLeft, totalTime) {
@@ -47,6 +50,7 @@ function handleTimerEnd() {
     if (timerStatus === "work") {
         timerStatus = "break";
         sessionCount = sessionCount + 1;
+        localStorage.setItem("sessionCount", sessionCount);
         updateDots();
         document.getElementById("sessionCount").textContent = "×" + sessionCount;
         timeLeft = (sessionCount % 4 === 0) ? 900 : breakInput.value * 60;
@@ -112,6 +116,7 @@ resetButton.addEventListener("click", function () {
 
 workInput.addEventListener("input", function () {
     if (workInput.value < 1) workInput.value = 1;
+    localStorage.setItem("workTime", workInput.value);
     if (!isRunning) {
         timeLeft = workInput.value * 60;
         display.textContent = formatTime(timeLeft);
@@ -120,6 +125,7 @@ workInput.addEventListener("input", function () {
 
 breakInput.addEventListener("input", function () {
     if (breakInput.value < 1) breakInput.value = 1;
+    localStorage.setItem("breakTime", breakInput.value);
     if (!isRunning) {
         if (timerStatus === "break") {
             timeLeft = breakInput.value * 60;
@@ -134,4 +140,17 @@ document.getElementById("debug").addEventListener("click", function () {
 
 if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1" && location.protocol !== "file:") {
     document.getElementById("debug").style.display = "none";
+}
+
+if (savedWork) {
+    workInput.value = savedWork;
+    timeLeft = savedWork * 60;
+    totalTime = timeLeft;
+    display.textContent = formatTime(timeLeft);
+}
+if (savedBreak) breakInput.value = savedBreak;
+if (savedSession) {
+    sessionCount = Number(savedSession);
+    document.getElementById("sessionCount").textContent = "×" + sessionCount;
+    updateDots();
 }
