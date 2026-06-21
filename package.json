@@ -1,0 +1,24 @@
+{
+  "name": "pomodoro",
+  "version": "1.0.0",
+  "description": "バニラJS（HTML / CSS / JavaScript）で作ったポモドーロタイマーです。  \r JavaScriptの基礎を手書きで学びながら、自分が毎日使う道具として作りました。",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IKcoding-jp/Pomo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IKcoding-jp/Pomo/issues"
+  },
+  "homepage": "https://github.com/IKcoding-jp/Pomo#readme",
+  "devDependencies": {
+    "eslint": "^10.5.0"
+  }
+}
