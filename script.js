@@ -17,6 +17,9 @@ const chimeSound = new Audio("sounds/chime.mp3");
 const savedWork = localStorage.getItem("workTime");
 const savedBreak = localStorage.getItem("breakTime");
 const savedSession = localStorage.getItem("sessionCount");
+const showStatsBtn = document.getElementById("showStats");
+const statsModal = document.getElementById("statsModal");
+const closeStatsBtn = document.getElementById("closeStats");
 ring.style.strokeDasharray = circumference;
 
 function updateRing(timeLeft, totalTime) {
@@ -165,14 +168,14 @@ function updateTodayStats() {
   const h = Math.floor(todayData.workMinutes / 60);
   const m = todayData.workMinutes % 60;
   const timeStr = h > 0 ? h + "時間" + m + "分" : m + "分";
-  document.getElementById("todayStats").textContent = 
+  document.getElementById("todayStats").textContent =
     "今日: " + todayData.sessions + "セッション / " + timeStr;
 }
 
 function saveTodaySession(workMinutes) {
-  const today = new Date().toISOString().slice(0,10);
-  const log = JSON.parse(localStorage.getItem("studyLog") || "{}" );
-  if(!log[today]) {
+  const today = new Date().toISOString().slice(0, 10);
+  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  if (!log[today]) {
     log[today] = { sessions: 0, workMinutes: 0 };
   }
   log[today].sessions += 1;
@@ -181,3 +184,38 @@ function saveTodaySession(workMinutes) {
 }
 
 updateTodayStats();
+
+showStatsBtn.addEventListener("click", () => {
+  renderBarChart();
+  statsModal.classList.remove("hidden");
+});
+
+closeStatsBtn.addEventListener("click", () => {
+  statsModal.classList.add("hidden");
+});
+
+function renderBarChart() {
+  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const chart = document.getElementById("barChart");
+  chart.innerHTML = "";
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const key = date.toISOString().slice(0, 10);
+    const data = log[key] || { sessions: 0, workMinutes: 0 };
+
+    const bar = document.createElement("div");
+    bar.className = "bar-item";
+    bar.innerHTML =
+      '<div class="bar-fill" style="height: ' +
+      data.workMinutes * 2 +
+      'px"></div>' +
+      '<div class="bar-label">' +
+      (date.getMonth() + 1) +
+      "/" +
+      date.getDate() +
+      "</div>";
+    chart.appendChild(bar);
+  }
+}

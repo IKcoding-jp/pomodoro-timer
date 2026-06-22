@@ -38,7 +38,17 @@
 
       <p id="todayStats">今日: 0セッション / 0分</p>
 
+      <button id="showStats">📊 統計</button>
+
       <button id="debug">デバッグ</button>
+    </div>
+
+    <div id="statsModal" class="modal hidden">
+      <div class="modal-content">
+        <button id="closeStats">✕</button>
+        <h2>過去７日の学習</h2>
+        <div id="barChart" class="bar-chart" ></div>
+      </div>
     </div>
 
     <script src="script.js"></script>
