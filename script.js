@@ -187,6 +187,7 @@ updateTodayStats();
 
 showStatsBtn.addEventListener("click", () => {
   renderBarChart();
+  renderHeatmap();
   statsModal.classList.remove("hidden");
 });
 
@@ -217,5 +218,28 @@ function renderBarChart() {
       date.getDate() +
       "</div>";
     chart.appendChild(bar);
+  }
+}
+
+function renderHeatmap() {
+  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const heatmap = document.getElementById("heatmap");
+  heatmap.innerHTML = "";
+
+  for (let i = 89; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const key = date.toISOString().slice(0, 10);
+    const minutes = (log[key] || { workMinutes: 0 }).workMinutes;
+
+    const cell = document.createElement("div");
+    cell.className = "heatmap-cell";
+    if (minutes >= 31) {
+      cell.classList.add("level-2");
+    } else if (minutes >= 1) {
+      cell.classList.add("level-1");
+    }
+    cell.title = key + ": " + minutes + "分";
+    heatmap.appendChild(cell);
   }
 }
