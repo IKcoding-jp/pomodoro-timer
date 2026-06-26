@@ -51,6 +51,7 @@ function formatTime(seconds) {
 }
 
 function handleTimerEnd() {
+  localStorage.removeItem("timerRunning");
   playChime();
   clearInterval(timer);
   isRunning = false;
@@ -62,7 +63,10 @@ function handleTimerEnd() {
     updateTodayStats();
     localStorage.setItem("sessionCount", sessionCount);
     updateDots();
-    timeLeft = sessionCount % 4 === 0 ? longBreakInput.value * 60 : breakInput.value * 60;
+    timeLeft =
+      sessionCount % 4 === 0
+        ? longBreakInput.value * 60
+        : breakInput.value * 60;
     display.textContent = "休憩";
     startButton.textContent = "休憩スタート";
   } else {
@@ -89,6 +93,7 @@ startButton.addEventListener("click", function () {
   if (isRunning) {
     clearInterval(timer);
     isRunning = false;
+    localStorage.removeItem("timerRunning");
     startButton.textContent = "スタート";
   } else {
     totalTime = timeLeft;
@@ -103,6 +108,10 @@ startButton.addEventListener("click", function () {
         handleTimerEnd();
       }
     }, 500);
+    localStorage.setItem("timerRunning", "true");
+    localStorage.setItem("savedStartTimestamp", startTimestamp);
+    localStorage.setItem("savedStartTimeLeft", startTimeLeft);
+    localStorage.setItem("savedTimerStatus", timerStatus);
     isRunning = true;
     startButton.textContent = "ストップ";
   }
@@ -192,6 +201,27 @@ function saveTodaySession(workMinutes) {
   log[today].sessions += 1;
   log[today].workMinutes += workMinutes;
   localStorage.setItem("studyLog", JSON.stringify(log));
+}
+
+if (localStorage.getItem("timerRunning") === "true") {
+  startTimestamp = Number(localStorage.getItem("savedStartTimestamp"));
+  startTimeLeft = Number(localStorage.getItem("savedStartTimeLeft"));
+  timerStatus = localStorage.getItem("savedTimerStatus");
+  timeLeft = startTimeLeft - Math.floor((Date.now() - startTimestamp) / 1000);
+  totalTime = startTimeLeft;
+  display.textContent = formatTime(timeLeft);
+  updateRing(timeLeft, totalTime);
+  timer = setInterval(function () {
+    const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+    timeLeft = startTimeLeft - elapsed;
+    display.textContent = formatTime(timeLeft);
+    updateRing(timeLeft, totalTime);
+    if (timeLeft <= 0) {
+      handleTimerEnd();
+    }
+  }, 500);
+  isRunning = true;
+  startButton.textContent = "ストップ";
 }
 
 updateTodayStats();
