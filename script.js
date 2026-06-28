@@ -63,6 +63,20 @@ function formatMinutes(minutes) {
   return h > 0 ? h + "時間" + m + "分" : m + "分";
 }
 
+function startTimer() {
+  timer = setInterval(function () {
+    const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+    timeLeft = startTimeLeft - elapsed;
+    display.textContent = formatTime(timeLeft);
+    updateRing(timeLeft, totalTime);
+    if (timeLeft <= 0) {
+      handleTimerEnd();
+    }
+  }, 500);
+  isRunning = true;
+  startButton.textContent = "ストップ";
+}
+
 function getStudyLog() {
   return JSON.parse(localStorage.getItem("studyLog") || "{}");
 }
@@ -116,21 +130,11 @@ startButton.addEventListener("click", function () {
     totalTime = timeLeft;
     startTimestamp = Date.now();
     startTimeLeft = timeLeft;
-    timer = setInterval(function () {
-      const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
-      timeLeft = startTimeLeft - elapsed;
-      display.textContent = formatTime(timeLeft);
-      updateRing(timeLeft, totalTime);
-      if (timeLeft <= 0) {
-        handleTimerEnd();
-      }
-    }, 500);
+    startTimer();
     localStorage.setItem(KEYS.timerRunning, "true");
     localStorage.setItem(KEYS.startTimestamp, startTimestamp);
     localStorage.setItem(KEYS.startTimeLeft, startTimeLeft);
     localStorage.setItem(KEYS.timerStatus, timerStatus);
-    isRunning = true;
-    startButton.textContent = "ストップ";
   }
 });
 
@@ -141,6 +145,8 @@ resetButton.addEventListener("click", function () {
   clearInterval(timer);
   timeLeft = workInput.value * 60;
   isRunning = false;
+  localStorage.removeItem(KEYS.timerRunning);
+  localStorage.setItem("sessionCount", 0);
   startButton.textContent = "スタート";
   display.textContent = formatTime(timeLeft);
   updateRing(timeLeft, totalTime);
@@ -226,17 +232,7 @@ if (localStorage.getItem(KEYS.timerRunning) === "true") {
   totalTime = startTimeLeft;
   display.textContent = formatTime(timeLeft);
   updateRing(timeLeft, totalTime);
-  timer = setInterval(function () {
-    const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
-    timeLeft = startTimeLeft - elapsed;
-    display.textContent = formatTime(timeLeft);
-    updateRing(timeLeft, totalTime);
-    if (timeLeft <= 0) {
-      handleTimerEnd();
-    }
-  }, 500);
-  isRunning = true;
-  startButton.textContent = "ストップ";
+  startTimer();
 }
 
 updateTodayStats();
