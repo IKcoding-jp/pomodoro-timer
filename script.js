@@ -1,3 +1,10 @@
+const KEYS = {
+  timerRunning: "timerRunning",
+  startTimestamp: "savedStartTimestamp",
+  startTimeLeft: "savedStartTimeLeft",
+  timerStatus: "savedTimerStatus",
+};
+
 let timeLeft = 1500;
 let totalTime = 1500;
 let timer;
@@ -50,8 +57,18 @@ function formatTime(seconds) {
   return m + ":" + String(s).padStart(2, "0");
 }
 
+function formatMinutes(minutes) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return h > 0 ? h + "時間" + m + "分": m + "分";
+}
+
+function getStudyLog() {
+  return JSON.parse(localStorage.getItem("studyLog") || "{}");
+}
+
 function handleTimerEnd() {
-  localStorage.removeItem("timerRunning");
+  localStorage.removeItem(KEYS.timerRunning);
   playChime();
   clearInterval(timer);
   isRunning = false;
@@ -93,7 +110,7 @@ startButton.addEventListener("click", function () {
   if (isRunning) {
     clearInterval(timer);
     isRunning = false;
-    localStorage.removeItem("timerRunning");
+    localStorage.removeItem(KEYS.timerRunning);
     startButton.textContent = "スタート";
   } else {
     totalTime = timeLeft;
@@ -108,10 +125,10 @@ startButton.addEventListener("click", function () {
         handleTimerEnd();
       }
     }, 500);
-    localStorage.setItem("timerRunning", "true");
-    localStorage.setItem("savedStartTimestamp", startTimestamp);
-    localStorage.setItem("savedStartTimeLeft", startTimeLeft);
-    localStorage.setItem("savedTimerStatus", timerStatus);
+    localStorage.setItem(KEYS.timerRunning, "true");
+    localStorage.setItem(KEYS.startTimestamp, startTimestamp);
+    localStorage.setItem(KEYS.startTimeLeft, startTimeLeft);
+    localStorage.setItem(KEYS.timerStatus, timerStatus);
     isRunning = true;
     startButton.textContent = "ストップ";
   }
@@ -183,18 +200,16 @@ if (savedSession) {
 
 function updateTodayStats() {
   const today = new Date().toISOString().slice(0, 10);
-  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const log = getStudyLog();
   const todayData = log[today] || { sessions: 0, workMinutes: 0 };
-  const h = Math.floor(todayData.workMinutes / 60);
-  const m = todayData.workMinutes % 60;
-  const timeStr = h > 0 ? h + "時間" + m + "分" : m + "分";
+  const timeStr = formatMinutes(todayData.workMinutes);
   document.getElementById("todayStats").textContent =
     "今日: " + todayData.sessions + "セッション / " + timeStr;
 }
 
 function saveTodaySession(workMinutes) {
   const today = new Date().toISOString().slice(0, 10);
-  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const log = getStudyLog();
   if (!log[today]) {
     log[today] = { sessions: 0, workMinutes: 0 };
   }
@@ -203,10 +218,10 @@ function saveTodaySession(workMinutes) {
   localStorage.setItem("studyLog", JSON.stringify(log));
 }
 
-if (localStorage.getItem("timerRunning") === "true") {
-  startTimestamp = Number(localStorage.getItem("savedStartTimestamp"));
-  startTimeLeft = Number(localStorage.getItem("savedStartTimeLeft"));
-  timerStatus = localStorage.getItem("savedTimerStatus");
+if (localStorage.getItem(KEYS.timerRunning) === "true") {
+  startTimestamp = Number(localStorage.getItem(KEYS.startTimestamp));
+  startTimeLeft = Number(localStorage.getItem(KEYS.startTimeLeft));
+  timerStatus = localStorage.getItem(KEYS.timerStatus);
   timeLeft = startTimeLeft - Math.floor((Date.now() - startTimestamp) / 1000);
   totalTime = startTimeLeft;
   display.textContent = formatTime(timeLeft);
@@ -245,7 +260,7 @@ closeSettingsBtn.addEventListener("click", () => {
 });
 
 function renderBarChart() {
-  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const log = getStudyLog();
   const chart = document.getElementById("barChart");
   chart.innerHTML = "";
   const values = Array.from({length: 7}, (_, i ) => {
@@ -277,7 +292,7 @@ function renderBarChart() {
 }
 
 function renderHeatmap() {
-  const log = JSON.parse(localStorage.getItem("studyLog") || "{}");
+  const log = getStudyLog();
   const heatmap = document.getElementById("heatmap");
   heatmap.innerHTML = "";
 
@@ -294,7 +309,8 @@ function renderHeatmap() {
     } else if (minutes >= 1) {
       cell.classList.add("level-1");
     }
-    cell.title = key + ": " + minutes + "分";
+    const timeStr = formatMinutes(minutes);
+    cell.title = key + ": " + timeStr;
     heatmap.appendChild(cell);
   }
 }
